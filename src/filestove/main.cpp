@@ -1,5 +1,8 @@
-#include <filestove/cook.hpp>
-#include <filestove/activity_monitor.hpp>
+//#include <filestove/cook.hpp>
+//#include <filestove/activity_monitor.hpp>
+
+#include <filestove/ui/cooker.hpp>
+#include <filestove/ui/widget.hpp>
 
 #include <gbBase/Finally.hpp>
 #include <gbBase/Log.hpp>
@@ -30,16 +33,20 @@ int main(int argc, char* argv[])
 
     QApplication the_app(argc, argv);
 
-    auto const t0 = std::chrono::steady_clock::now();
-    filestove::cook("c:\\doc\\SFML-2.5.1");
-    auto const t1 = std::chrono::steady_clock::now();
-    GHULBUS_LOG(Info, "Took " << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count() << "s.");
+    //auto const t0 = std::chrono::steady_clock::now();
+    //filestove::cook("c:\\doc\\SFML-2.5.1");
+    //auto const t1 = std::chrono::steady_clock::now();
+    //GHULBUS_LOG(Info, "Took " << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count() << "s.");
 
-    filestove::ActivityMonitor mon;
-    for (int i = 0; i < 128; ++i) {
-        mon.collect();
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-    }
+    //filestove::ActivityMonitor mon;
+    //for (int i = 0; i < 128; ++i) {
+    //    mon.collect();
+    //    std::this_thread::sleep_for(std::chrono::seconds(2));
+    //}
+
+    filestove::ui::StoveWidget widget;
+    filestove::ui::Cooker cooker;
+    QObject::connect(&the_app, &QApplication::aboutToQuit, &cooker, &filestove::ui::Cooker::requestQuit);
 
     return the_app.exec();
 }

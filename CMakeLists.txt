@@ -35,6 +35,7 @@ set(FILESTOVE_SOURCE_FILES
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/main.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/activity_monitor.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/cook.cpp
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/file_collector.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/stove.cpp
 )
 
@@ -42,10 +43,12 @@ set(FILESTOVE_HEADER_FILES
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/activity_monitor.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/cook.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/exceptions.hpp
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/file_collector.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/stove.hpp
 )
 
 set(FILESTOVE_QT_SOURCE_FILES
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/cooker.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/widget.cpp
 )
 
@@ -53,6 +56,7 @@ set(FILESTOVE_QT_HEADER_FILES
 )
 
 set(FILESTOVE_QT_MOC_HEADER_FILES
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/cooker.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/widget.hpp
 )
 qt5_wrap_cpp(FILESTOVE_QT_MOC_SOURCE_FILES ${FILESTOVE_QT_MOC_HEADER_FILES})

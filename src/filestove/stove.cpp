@@ -95,6 +95,9 @@ Stove::Stove(std::vector<std::filesystem::path> files_to_cook)
 }
 
 Stove::~Stove() = default;
+Stove::Stove(Stove&&) = default;
+Stove& Stove::operator=(Stove&&) = default;
+
 
 bool Stove::cook()
 {

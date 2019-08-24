@@ -14,6 +14,9 @@ public:
     Stove(std::vector<std::filesystem::path> files_to_cook);
     ~Stove();
 
+    Stove(Stove&&);
+    Stove& operator=(Stove&&);
+
     Stove(Stove const&) = delete;
     Stove& operator=(Stove const&) = delete;
 
