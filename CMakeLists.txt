@@ -11,6 +11,7 @@ add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/std:c++latest>)
 add_compile_definitions($<$<CXX_COMPILER_ID:MSVC>:_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING>)
 add_compile_definitions($<$<CXX_COMPILER_ID:MSVC>:_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING>)
 add_compile_definitions($<$<CXX_COMPILER_ID:MSVC>:WIN32_LEAN_AND_MEAN>)
+add_compile_definitions($<$<CXX_COMPILER_ID:MSVC>:NOMINMAX>)
 add_compile_options($<$<CXX_COMPILER_ID:GNU,AppleClang,Clang>:-Wall>)
 add_compile_options($<$<CXX_COMPILER_ID:GNU,AppleClang,Clang>:-pedantic>)
 add_compile_options($<$<CXX_COMPILER_ID:Clang>:-stdlib=libc++>)
@@ -34,12 +35,14 @@ set(FILESTOVE_SOURCE_FILES
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/main.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/activity_monitor.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/cook.cpp
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/stove.cpp
 )
 
 set(FILESTOVE_HEADER_FILES
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/activity_monitor.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/cook.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/exceptions.hpp
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/stove.hpp
 )
 
 set(FILESTOVE_QT_SOURCE_FILES

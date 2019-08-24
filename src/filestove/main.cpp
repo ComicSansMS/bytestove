@@ -16,8 +16,12 @@ int main(int argc, char* argv[])
     auto const guard_logging = Ghulbus::finally([]() { Ghulbus::Log::shutdownLogging(); });
     Ghulbus::Log::setLogLevel(Ghulbus::LogLevel::Trace);
 
+    /*
     Ghulbus::Log::Handlers::LogToFile file_handler("filestove.log");
     Ghulbus::Log::Handlers::LogMultiSink upstream(Ghulbus::Log::Handlers::logToWindowsDebugger, file_handler);
+    /*/
+    auto upstream = Ghulbus::Log::Handlers::logToWindowsDebugger;
+    //*/
 
     Ghulbus::Log::Handlers::LogAsync async_handler(upstream);
     Ghulbus::Log::setLogHandler(async_handler);
@@ -27,7 +31,7 @@ int main(int argc, char* argv[])
     QApplication the_app(argc, argv);
 
     auto const t0 = std::chrono::steady_clock::now();
-    filestove::cook("f:\\demo\\");
+    filestove::cook("c:\\doc\\SFML-2.5.1");
     auto const t1 = std::chrono::steady_clock::now();
     GHULBUS_LOG(Info, "Took " << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count() << "s.");
 

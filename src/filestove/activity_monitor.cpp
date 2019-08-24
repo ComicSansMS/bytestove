@@ -114,8 +114,9 @@ ActivityMonitor::ActivityMonitor()
 
 ActivityMonitor::~ActivityMonitor() = default;
 
-void ActivityMonitor::collect()
+std::size_t ActivityMonitor::collect()
 {
+    std::size_t ret = 0;
     PDH_STATUS res = PdhCollectQueryData(m_pimpl->hquery);
     if (res != ERROR_SUCCESS) {
         GHULBUS_THROW(Win32Exception{} << Exception_Info::pdh_status(res), "Error collecting pdh query data.");
@@ -127,8 +128,11 @@ void ActivityMonitor::collect()
             GHULBUS_THROW(Win32Exception{} << Exception_Info::pdh_status(res), "Error formatting pdh counter data.");
         } else {
             GHULBUS_LOG(Info, c.name << ": " << formatted_value.largeValue);
+            GHULBUS_ASSERT(formatted_value.largeValue >= 0);
+            ret += static_cast<std::size_t>(formatted_value.largeValue);
         }
     }
+    return ret;
 }
 
 }

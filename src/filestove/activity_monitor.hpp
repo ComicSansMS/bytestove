@@ -12,7 +12,11 @@ public:
     ActivityMonitor();
     ~ActivityMonitor();
 
-    void collect();
+    /** Collects bytes read and written for disk I/O.
+    * \return The accumulated number of bytes read and written across all disks
+     *        since the last call to collect().
+     */
+    std::size_t collect();
 };
 
 }
