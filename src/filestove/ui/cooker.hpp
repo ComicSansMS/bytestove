@@ -29,7 +29,6 @@ public slots:
     void requestQuit();
 private:
     void run();
-    void collectFiles();
 };
 
 }

@@ -41,21 +41,26 @@ void Cooker::run()
     filestove::FileCollector collector(std::move(m_paths));
     std::unique_lock lk(m_mtx);
     bool done = false;
+    bool is_waiting = true;
     std::size_t read_overall = 0;
-    std::size_t files_overall = 0;
     std::size_t read_this_interval = 0;
+    std::optional<filestove::Stove> stove;
+    std::chrono::steady_clock::time_point t0;
     for (;;) {
-        std::optional<filestove::Stove> stove;
-        if (m_cv.wait_for(lk, interval, [this]() { return m_quitRequested; })) {
-            return;
-        }
-        auto const t0 = std::chrono::steady_clock::now();
-        bool timeout = false;
-        while (monitor.collect() < threshold + read_this_interval) {
+        if (is_waiting) {
+            if (m_cv.wait_for(lk, interval, [this]() { return m_quitRequested; })) {
+                return;
+            }
+            if (monitor.collect() < threshold) {
+                is_waiting = false;
+                t0 = std::chrono::steady_clock::now();
+            }
+        } else {
+            bool timeout = false;
             if (!stove) {
-                if (done) { return; }
+                if (done) { break; }
                 if (!collector.collect(file_collect_threshold)) { done = true; }
-                stove = filestove::Stove{collector.extractCollectedFiles()};
+                stove = filestove::Stove{ collector.extractCollectedFiles() };
             }
             while (stove->cook()) {
                 auto const t1 = std::chrono::steady_clock::now();
@@ -63,20 +68,20 @@ void Cooker::run()
             }
             read_this_interval += stove->readCount();
             stove->resetReadCount();
-            if (timeout) { break; }
-            stove = std::nullopt;
+            if (timeout) {
+                if (monitor.collect() > threshold + read_this_interval) {
+                    is_waiting = true;
+                }
+                read_overall += read_this_interval;
+                read_this_interval = 0;
+                t0 = std::chrono::steady_clock::now();
+            } else {
+                stove = std::nullopt;
+            }
         }
     }
+    GHULBUS_LOG(Info, "Done cooking. Read " << read_overall + read_this_interval << " bytes in total.");
 }
-
-void Cooker::collectFiles()
-{
-    filestove::FileCollector collector(std::move(m_paths));
-    while (collector.collect(1)) ;
-    m_paths = collector.extractCollectedFiles();
-    return;
-}
-
 
 }
 

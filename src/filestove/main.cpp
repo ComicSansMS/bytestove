@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     auto const guard_logging = Ghulbus::finally([]() { Ghulbus::Log::shutdownLogging(); });
     Ghulbus::Log::setLogLevel(Ghulbus::LogLevel::Trace);
 
-    /*
+    //*
     Ghulbus::Log::Handlers::LogToFile file_handler("filestove.log");
     Ghulbus::Log::Handlers::LogMultiSink upstream(Ghulbus::Log::Handlers::logToWindowsDebugger, file_handler);
     /*/
