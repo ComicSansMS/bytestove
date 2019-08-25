@@ -6,6 +6,11 @@
 
 #include <gbBase/Log.hpp>
 
+#pragma warning(push)
+#pragma warning(disable: 5054)
+#include <QMessageBox>
+#pragma warning(pop)
+
 #include <chrono>
 #include <optional>
 
@@ -28,6 +33,15 @@ void Cooker::requestQuit()
     std::lock_guard lk(m_mtx);
     m_quitRequested = true;
     m_cv.notify_all();
+
+    try {
+        writeConfig(m_config);
+    } catch (std::exception& e) {
+        QMessageBox msgbox;
+        msgbox.setText("Error while saving config file");
+        msgbox.setDetailedText(e.what());
+        msgbox.exec();
+    }
 }
 
 void Cooker::run()

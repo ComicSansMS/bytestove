@@ -46,7 +46,7 @@ Config readConfig(std::filesystem::path const& filename)
         return std::equal(std::begin(g_magicNumber), std::end(g_magicNumber), std::begin(magic));
     };
     fin.read(magic, 5);
-    if (!fin || check_magic_number(magic)) {
+    if (!fin || !check_magic_number(magic)) {
         GHULBUS_LOG(Error, "Invalid magic number sequence.");
         GHULBUS_THROW(Ghulbus::Exceptions::IOError{}, "Error reading config file.");
     }
