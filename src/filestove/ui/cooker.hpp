@@ -27,6 +27,10 @@ public:
     Cooker& operator=(Cooker const&) = delete;
 public slots:
     void requestQuit();
+signals:
+    void startWaiting();
+    void startCooking();
+    void cookingCompleted();
 private:
     void run();
 };

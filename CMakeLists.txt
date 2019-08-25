@@ -34,6 +34,7 @@ set(FILESTOVE_SOURCE_DIRECTORY ${PROJECT_SOURCE_DIR}/src)
 set(FILESTOVE_SOURCE_FILES
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/main.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/activity_monitor.cpp
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/config.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/cook.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/file_collector.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/stove.cpp
@@ -41,6 +42,7 @@ set(FILESTOVE_SOURCE_FILES
 
 set(FILESTOVE_HEADER_FILES
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/activity_monitor.hpp
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/config.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/cook.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/exceptions.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/file_collector.hpp

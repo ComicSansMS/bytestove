@@ -16,7 +16,7 @@ Cooker::Cooker()
 {
     m_thread = std::thread([this]() { run(); });
     m_paths.push_back("c:\\doc\\SFML-2.5.1");
-    m_paths.push_back("c:\\cpp\\coroutines");
+    m_paths.push_back("c:\\cpp\\GhulbusBase");
 }
 
 Cooker::~Cooker()
@@ -48,12 +48,14 @@ void Cooker::run()
     std::chrono::steady_clock::time_point t0;
     for (;;) {
         if (is_waiting) {
+            emit startWaiting();
             if (m_cv.wait_for(lk, interval, [this]() { return m_quitRequested; })) {
                 return;
             }
             if (monitor.collect() < threshold) {
                 is_waiting = false;
                 t0 = std::chrono::steady_clock::now();
+                emit startCooking();
             }
         } else {
             bool timeout = false;
@@ -81,6 +83,7 @@ void Cooker::run()
         }
     }
     GHULBUS_LOG(Info, "Done cooking. Read " << read_overall + read_this_interval << " bytes in total.");
+    emit cookingCompleted();
 }
 
 }
