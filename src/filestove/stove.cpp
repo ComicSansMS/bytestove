@@ -80,18 +80,20 @@ struct Stove::Pimpl {
         {}
     } m_currentFile;
     std::size_t m_readCount = 0;
-    static constexpr DWORD bufferSize = 4096;
-    std::byte m_buffer[bufferSize];
+    DWORD m_bufferSize;
+    std::unique_ptr<std::byte[]> m_buffer;
 
     bool cook();
     void openFile();
 };
 
-Stove::Stove(std::vector<std::filesystem::path> files_to_cook)
+Stove::Stove(std::vector<std::filesystem::path> files_to_cook, std::int32_t buffer_size)
     :m_pimpl(std::make_unique<Pimpl>())
 {
     m_pimpl->m_files = std::move(files_to_cook);
     m_pimpl->m_currentFile.it = begin(m_pimpl->m_files);
+    m_pimpl->m_bufferSize = buffer_size;
+    m_pimpl->m_buffer.reset(new std::byte[buffer_size]);
 }
 
 Stove::~Stove() = default;
@@ -114,7 +116,7 @@ bool Stove::Pimpl::cook()
 
     DWORD bytes_read;
     DWORD const to_read = static_cast<DWORD>(
-        std::min(static_cast<size_t>(bufferSize), m_currentFile.size - m_currentFile.bytes_read));
+        std::min(static_cast<size_t>(m_bufferSize), m_currentFile.size - m_currentFile.bytes_read));
     if (ReadFile(m_currentFile.hfile.get(), &m_buffer, to_read, &bytes_read, nullptr) != TRUE) {
         GHULBUS_LOG(Warning, "Unable to read file " << m_currentFile.it->generic_string() <<
                              "; Error was: " << GetLastError());

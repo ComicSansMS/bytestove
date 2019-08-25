@@ -13,8 +13,8 @@ struct Config {
     std::vector<std::filesystem::path> directories;
     std::chrono::milliseconds scanInterval;
     std::size_t readIdleThreshold;
-    std::size_t readBufferSize;
-    std::size_t fileCollectChunkSize;
+    std::int32_t readBufferSize;
+    std::int32_t fileCollectChunkSize;
 
     Config();
 };

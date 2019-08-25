@@ -11,7 +11,7 @@ class Stove {
     struct Pimpl;
     std::unique_ptr<Pimpl> m_pimpl;
 public:
-    Stove(std::vector<std::filesystem::path> files_to_cook);
+    Stove(std::vector<std::filesystem::path> files_to_cook, std::int32_t buffer_size);
     ~Stove();
 
     Stove(Stove&&);

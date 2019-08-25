@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
         [&async_handler]() { if (async_handler) { async_handler->stop(); } });
 
     filestove::ui::StoveWidget widget;
-    filestove::ui::Cooker cooker;
+    filestove::ui::Cooker cooker{config};
     QObject::connect(&the_app, &QApplication::aboutToQuit,
                      &cooker, &filestove::ui::Cooker::requestQuit);
 

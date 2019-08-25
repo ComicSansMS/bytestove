@@ -15,7 +15,7 @@ private:
 public:
     FileCollector(std::vector<std::filesystem::path> paths);
 
-    bool collect(int collect_limit);
+    bool collect(std::int32_t collect_limit);
 
     std::vector<std::filesystem::path> extractCollectedFiles();
 };

@@ -16,7 +16,7 @@ void cook(std::filesystem::path const& path)
         }
     }
     GHULBUS_LOG(Info, "Collected " << files.size() << " files for cooking.");
-    filestove::Stove stove(std::move(files));
+    filestove::Stove stove(std::move(files), 4096);
     while (stove.cook()) {};
 
     GHULBUS_LOG(Info, "Read " << stove.readCount() << " bytes overall.");

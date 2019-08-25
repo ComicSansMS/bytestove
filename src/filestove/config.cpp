@@ -110,17 +110,17 @@ Config readConfig(std::filesystem::path const& filename)
     }
     ret.readIdleThreshold = read_idle_threshold;
 
-    std::uint64_t read_buffer_size;
-    fin.read(reinterpret_cast<char*>(&read_buffer_size), 8);
-    if (!fin) {
+    std::int32_t read_buffer_size;
+    fin.read(reinterpret_cast<char*>(&read_buffer_size), 4);
+    if (!fin || read_buffer_size <= 0) {
         GHULBUS_LOG(Error, "Invalid read buffer size.");
         GHULBUS_THROW(Ghulbus::Exceptions::IOError{}, "Error reading config file.");
     }
     ret.readBufferSize = read_buffer_size;
 
-    std::uint64_t file_collect_chunk_size;
-    fin.read(reinterpret_cast<char*>(&file_collect_chunk_size), 8);
-    if (!fin) {
+    std::int32_t file_collect_chunk_size;
+    fin.read(reinterpret_cast<char*>(&file_collect_chunk_size), 4);
+    if (!fin || file_collect_chunk_size <= 0) {
         GHULBUS_LOG(Error, "Invalid file collect chunk size.");
         GHULBUS_THROW(Ghulbus::Exceptions::IOError{}, "Error reading config file.");
     }
@@ -183,8 +183,8 @@ void writeConfig(Config const& config, std::filesystem::path const& filename)
     fout.write(reinterpret_cast<char const*>(&scan_interval), 4);
 
     fout.write(reinterpret_cast<char const*>(&config.readIdleThreshold), 8);
-    fout.write(reinterpret_cast<char const*>(&config.readBufferSize), 8);
-    fout.write(reinterpret_cast<char const*>(&config.fileCollectChunkSize), 8);
+    fout.write(reinterpret_cast<char const*>(&config.readBufferSize), 4);
+    fout.write(reinterpret_cast<char const*>(&config.fileCollectChunkSize), 4);
     if (!fout) {
         GHULBUS_LOG(Error, "Config file write error.");
         GHULBUS_THROW(Ghulbus::Exceptions::IOError{}, "Error writing config file.");
