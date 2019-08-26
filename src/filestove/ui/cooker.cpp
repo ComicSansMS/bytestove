@@ -30,6 +30,11 @@ void Cooker::requestQuit()
     m_cv.notify_all();
 }
 
+void Cooker::onConfigUpdate()
+{
+
+}
+
 void Cooker::run()
 {
     filestove::ActivityMonitor monitor;

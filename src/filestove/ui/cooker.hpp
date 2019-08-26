@@ -29,6 +29,7 @@ public:
     Cooker& operator=(Cooker const&) = delete;
 public slots:
     void requestQuit();
+    void onConfigUpdate();
 signals:
     void startWaiting();
     void startCooking();
