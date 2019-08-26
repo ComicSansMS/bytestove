@@ -47,8 +47,8 @@ void Cooker::requestQuit()
 void Cooker::run()
 {
     filestove::ActivityMonitor monitor;
-    filestove::FileCollector collector(m_config.directories);
     std::unique_lock lk(m_mtx);
+    filestove::FileCollector collector(m_config.directories);
     bool done = false;
     bool is_waiting = true;
     std::size_t read_overall = 0;
