@@ -1,6 +1,7 @@
 #include <filestove/config.hpp>
 #include <filestove/ui/config_holder.hpp>
 #include <filestove/ui/cooker.hpp>
+#include <filestove/ui/tray_icon.hpp>
 #include <filestove/ui/widget.hpp>
 #include <filestove/ui/options_dialog.hpp>
 
@@ -55,15 +56,22 @@ int main(int argc, char* argv[])
     filestove::ui::ConfigHolder config_holder{ config };
     filestove::ui::StoveWidget widget{ config.directories };
     filestove::ui::Cooker cooker{ config };
+    filestove::ui::TrayIcon tray_icon;
     QObject::connect(&the_app, &QApplication::aboutToQuit,
                      &cooker, &filestove::ui::Cooker::requestQuit);
     QObject::connect(&widget, &filestove::ui::StoveWidget::pathlistUpdate,
                      &config_holder, &filestove::ui::ConfigHolder::updatePathlist);
     QObject::connect(&config_holder, &filestove::ui::ConfigHolder::configChanged,
                      &cooker, &filestove::ui::Cooker::onConfigUpdate);
+    QObject::connect(&cooker, &filestove::ui::Cooker::startWaiting,
+                     &tray_icon, &filestove::ui::TrayIcon::extinguish);
+    QObject::connect(&cooker, &filestove::ui::Cooker::startCooking,
+                     &tray_icon, &filestove::ui::TrayIcon::ignite);
+    QObject::connect(&cooker, &filestove::ui::Cooker::cookingCompleted,
+                     &tray_icon, &filestove::ui::TrayIcon::finished);
 
-    filestove::ui::OptionsDialog dialg;
-    dialg.exec();
+    //filestove::ui::OptionsDialog dialg;
+    //dialg.exec();
 
     return the_app.exec();
 }

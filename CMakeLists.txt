@@ -54,6 +54,7 @@ set(FILESTOVE_QT_SOURCE_FILES
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/cooker.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/options_dialog.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/pathlist_widget.cpp
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/tray_icon.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/widget.cpp
 )
 
@@ -65,6 +66,7 @@ set(FILESTOVE_QT_MOC_HEADER_FILES
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/cooker.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/options_dialog.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/pathlist_widget.hpp
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/tray_icon.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/widget.hpp
 )
 qt5_wrap_cpp(FILESTOVE_QT_MOC_SOURCE_FILES ${FILESTOVE_QT_MOC_HEADER_FILES})
@@ -73,10 +75,10 @@ source_group(moc FILES
     ${FILESTOVE_QT_MOC_SOURCE_FILES}
 )
 
-#qt5_add_resources(FILESTOVE_QT_RESOURCE_FILES ${PROJECT_SOURCE_DIR}/resources/filestove.qrc)
-#source_group(resources FILES
-#    ${FILESTOVE_QT_RESOURCE_FILES}
-#)
+qt5_add_resources(FILESTOVE_QT_RESOURCE_FILES ${PROJECT_SOURCE_DIR}/resources/filestove.qrc)
+source_group(resources FILES
+    ${FILESTOVE_QT_RESOURCE_FILES}
+)
 
 
 add_executable(filestove WIN32

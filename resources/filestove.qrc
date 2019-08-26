@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+  <qresource>
+    <file>filestove_base.ico</file>
+    <file>filestove_burning.ico</file>
+    <file>filestove_done.ico</file>
+  </qresource>
+</RCC>
