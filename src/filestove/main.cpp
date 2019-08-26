@@ -1,4 +1,5 @@
 #include <filestove/config.hpp>
+#include <filestove/ui/config_holder.hpp>
 #include <filestove/ui/cooker.hpp>
 #include <filestove/ui/widget.hpp>
 
@@ -50,10 +51,13 @@ int main(int argc, char* argv[])
     auto const guard_async_log_handler = Ghulbus::finally(
         [&async_handler]() { if (async_handler) { async_handler->stop(); } });
 
-    filestove::ui::StoveWidget widget;
+    filestove::ui::ConfigHolder holder{ config };
+    filestove::ui::StoveWidget widget{ config.directories };
     filestove::ui::Cooker cooker{ config };
     QObject::connect(&the_app, &QApplication::aboutToQuit,
                      &cooker, &filestove::ui::Cooker::requestQuit);
+    QObject::connect(&widget, &filestove::ui::StoveWidget::pathlistUpdate,
+                     &holder, &filestove::ui::ConfigHolder::updatePathlist);
 
     return the_app.exec();
 }

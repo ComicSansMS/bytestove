@@ -16,6 +16,8 @@ public:
     PathlistWidget(QWidget* parent);
 
     void keyPressEvent(QKeyEvent* evt) override;
+
+    void removeSelectedItems();
 };
 
 }

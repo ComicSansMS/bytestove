@@ -12,6 +12,9 @@
 #include <QPushButton>
 #pragma warning(pop)
 
+#include <filesystem>
+#include <vector>
+
 namespace filestove::ui {
 
 class PathlistWidget;
@@ -25,13 +28,17 @@ private:
     QPushButton* m_buttonAddFiles;
     QPushButton* m_buttonAddDirectory;
     QPushButton* m_buttonRemoveEntry;
+    QPushButton* m_buttonOk;
 public:
-    StoveWidget();
+    StoveWidget(std::vector<std::filesystem::path> const& path_list);
 
+signals:
+    void pathlistUpdate(QStringList);
 public slots:
     void onAddFiles();
     void onAddDirectory();
     void onRemoveEntry();
+    void commitPathlist();
 };
 
 }

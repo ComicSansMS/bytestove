@@ -19,11 +19,16 @@ PathlistWidget::PathlistWidget(QWidget* parent)
 void PathlistWidget::keyPressEvent(QKeyEvent* evt)
 {
     if (evt->key() == Qt::Key_Delete) {
-        for (QListWidgetItem* to_remove : selectedItems()) {
-            delete to_remove;
-        }
+        removeSelectedItems();
     }
     return QListWidget::keyPressEvent(evt);
+}
+
+void PathlistWidget::removeSelectedItems()
+{
+    for (QListWidgetItem* to_remove : selectedItems()) {
+        delete to_remove;
+    }
 }
 
 }
