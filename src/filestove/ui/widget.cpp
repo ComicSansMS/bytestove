@@ -2,6 +2,8 @@
 
 #include <filestove/ui/pathlist_widget.hpp>
 
+#include <gbBase/Assert.hpp>
+
 #pragma warning(push)
 #pragma warning(disable: 4251)
 #include <QFileDialog>
@@ -22,7 +24,7 @@ StoveWidget::StoveWidget(std::vector<std::filesystem::path> const& path_list)
     setLayout(&m_layout);
 
     for (auto const& p : path_list) {
-        m_list->addItem(QString::fromStdString(p.generic_string()));
+        addEntry(p, std::filesystem::is_directory(p) ? FileType::Directory : FileType::Regular);
     }
 
     setWindowTitle("FileStove");
@@ -42,7 +44,7 @@ void StoveWidget::onAddFiles()
     if (filediag.exec()) {
         QStringList added_files = filediag.selectedFiles();
         for (auto const f : added_files) {
-            m_list->addItem(f);
+            addEntry(f.toStdString(), FileType::Regular);
         }
     }
 }
@@ -55,7 +57,7 @@ void StoveWidget::onAddDirectory()
     if (filediag.exec()) {
         QStringList added_files = filediag.selectedFiles();
         for (auto const f : added_files) {
-            m_list->addItem(f);
+            addEntry(f.toStdString(), FileType::Directory);
         }
     }
 }
@@ -78,6 +80,19 @@ void StoveWidget::closeEvent(QCloseEvent* evt)
 void StoveWidget::onShowRequested()
 {
     show();
+}
+
+void StoveWidget::addEntry(std::filesystem::path const& p, FileType type)
+{
+    QListWidgetItem* item = new QListWidgetItem();
+    if (type == FileType::Directory) {
+        item->setIcon(style()->standardIcon(QStyle::SP_DirIcon));
+    } else {
+        GHULBUS_ASSERT(type == FileType::Regular);
+        item->setIcon(style()->standardIcon(QStyle::SP_FileIcon));
+    }
+    item->setText(QString::fromStdString(p.generic_string()));
+    m_list->addItem(item);
 }
 
 }

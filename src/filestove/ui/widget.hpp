@@ -22,6 +22,10 @@ class PathlistWidget;
 class StoveWidget : public QWidget {
     Q_OBJECT;
 private:
+    enum class FileType {
+        Regular,
+        Directory
+    };
     QVBoxLayout m_layout;
     PathlistWidget* m_list;
     QHBoxLayout m_buttonLayout;
@@ -39,6 +43,8 @@ public slots:
     void onAddDirectory();
     void onRemoveEntry();
     void onShowRequested();
+private:
+    void addEntry(std::filesystem::path const& p, FileType type);
 };
 
 }
