@@ -28,17 +28,17 @@ private:
     QPushButton* m_buttonAddFiles;
     QPushButton* m_buttonAddDirectory;
     QPushButton* m_buttonRemoveEntry;
-    QPushButton* m_buttonOk;
 public:
     StoveWidget(std::vector<std::filesystem::path> const& path_list);
 
+    void closeEvent(QCloseEvent* evt) override;
 signals:
     void pathlistUpdate(QStringList);
 public slots:
     void onAddFiles();
     void onAddDirectory();
     void onRemoveEntry();
-    void commitPathlist();
+    void onShowRequested();
 };
 
 }

@@ -12,11 +12,13 @@ TrayIcon::TrayIcon()
 {
     m_menu->addAction("About", this, &TrayIcon::showAboutDialog);
     m_menu->addSeparator();
-    m_menu->addAction("Quit");
+    m_menu->addAction("Quit", this, [this]() { emit requestQuit(); });
 
     setIcon(m_iconBase);
     setContextMenu(m_menu.get());
     show();
+
+    connect(this, &QSystemTrayIcon::activated, this, &TrayIcon::onActivation);
 }
 
 void TrayIcon::ignite()
@@ -38,6 +40,13 @@ void TrayIcon::showAboutDialog()
 {
     AboutDialog dialog;
     dialog.exec();
+}
+
+void TrayIcon::onActivation(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::Trigger) {
+        emit showStoveWidget();
+    }
 }
 
 }

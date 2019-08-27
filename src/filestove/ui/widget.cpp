@@ -12,21 +12,20 @@ namespace filestove::ui {
 StoveWidget::StoveWidget(std::vector<std::filesystem::path> const& path_list)
     :QWidget(), m_list(new PathlistWidget(this)), m_buttonAddFiles(new QPushButton("+", this)),
      m_buttonAddDirectory(new QPushButton("+ Dir", this)),
-     m_buttonRemoveEntry(new QPushButton("-", this)), m_buttonOk(new QPushButton("OK", this))
+     m_buttonRemoveEntry(new QPushButton("-", this))
 {
     m_layout.addWidget(m_list);
     m_buttonLayout.addWidget(m_buttonAddFiles);
     m_buttonLayout.addWidget(m_buttonAddDirectory);
     m_buttonLayout.addWidget(m_buttonRemoveEntry);
     m_layout.addLayout(&m_buttonLayout);
-    m_layout.addWidget(m_buttonOk);
     setLayout(&m_layout);
 
     for (auto const& p : path_list) {
         m_list->addItem(QString::fromStdString(p.generic_string()));
     }
 
-    show();
+    setWindowTitle("FileStove");
 
     connect(m_buttonAddFiles, &QPushButton::clicked,
             this, &StoveWidget::onAddFiles);
@@ -34,8 +33,6 @@ StoveWidget::StoveWidget(std::vector<std::filesystem::path> const& path_list)
             this, &StoveWidget::onAddDirectory);
     connect(m_buttonRemoveEntry, &QPushButton::clicked,
             this, &StoveWidget::onRemoveEntry);
-    connect(m_buttonOk, &QPushButton::clicked,
-            this, &StoveWidget::commitPathlist);
 }
 
 void StoveWidget::onAddFiles()
@@ -68,13 +65,19 @@ void StoveWidget::onRemoveEntry()
     m_list->removeSelectedItems();
 }
 
-void StoveWidget::commitPathlist()
+void StoveWidget::closeEvent(QCloseEvent* evt)
 {
     QStringList l;
     for (int i = 0; i < m_list->count(); ++i) {
         l.push_back(m_list->item(i)->text());
     }
     emit pathlistUpdate(l);
+    return QWidget::closeEvent(evt);
+}
+
+void StoveWidget::onShowRequested()
+{
+    show();
 }
 
 }

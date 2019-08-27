@@ -69,9 +69,12 @@ int main(int argc, char* argv[])
                      &tray_icon, &filestove::ui::TrayIcon::ignite);
     QObject::connect(&cooker, &filestove::ui::Cooker::cookingCompleted,
                      &tray_icon, &filestove::ui::TrayIcon::finished);
+    QObject::connect(&tray_icon, &filestove::ui::TrayIcon::showStoveWidget,
+                     &widget, &filestove::ui::StoveWidget::show);
+    QObject::connect(&tray_icon, &filestove::ui::TrayIcon::requestQuit,
+                     &the_app, &QApplication::quit);
 
-    //filestove::ui::OptionsDialog dialg;
-    //dialg.exec();
+    the_app.setQuitOnLastWindowClosed(false);
 
     return the_app.exec();
 }

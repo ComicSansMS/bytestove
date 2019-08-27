@@ -26,11 +26,15 @@ private:
     std::unique_ptr<QMenu> m_menu;
 public:
     TrayIcon();
+signals:
+    void showStoveWidget();
+    void requestQuit();
 public slots:
     void ignite();
     void extinguish();
     void finished();
     void showAboutDialog();
+    void onActivation(QSystemTrayIcon::ActivationReason reason);
 };
 
 }
