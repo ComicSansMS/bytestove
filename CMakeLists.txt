@@ -50,6 +50,7 @@ set(FILESTOVE_HEADER_FILES
 )
 
 set(FILESTOVE_QT_SOURCE_FILES
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/about_dialog.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/config_holder.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/cooker.cpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/options_dialog.cpp
@@ -62,6 +63,7 @@ set(FILESTOVE_QT_HEADER_FILES
 )
 
 set(FILESTOVE_QT_MOC_HEADER_FILES
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/about_dialog.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/config_holder.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/cooker.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/ui/options_dialog.hpp

@@ -3,5 +3,6 @@
     <file>filestove_base.ico</file>
     <file>filestove_burning.ico</file>
     <file>filestove_done.ico</file>
+    <file>gpl.txt</file>
   </qresource>
 </RCC>

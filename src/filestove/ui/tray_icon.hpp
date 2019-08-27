@@ -6,6 +6,13 @@
 #include <QSystemTrayIcon>
 #pragma warning(pop)
 
+#pragma warning(push)
+#pragma warning(disable: 4251 5054)
+#include <QMenu>
+#pragma warning(pop)
+
+#include <memory>
+
 namespace filestove::ui {
 
 class PathlistWidget;
@@ -16,12 +23,14 @@ private:
     QIcon m_iconBase;
     QIcon m_iconBurning;
     QIcon m_iconDone;
+    std::unique_ptr<QMenu> m_menu;
 public:
     TrayIcon();
 public slots:
     void ignite();
     void extinguish();
     void finished();
+    void showAboutDialog();
 };
 
 }
