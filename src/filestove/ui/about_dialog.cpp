@@ -1,5 +1,7 @@
 #include <filestove/ui/about_dialog.hpp>
 
+#include <filestove/version.hpp>
+
 #pragma warning(push)
 #pragma warning(disable: 4251)
 #include <QApplication>
@@ -27,15 +29,16 @@ AboutDialog::AboutDialog(QWidget* parent)
     img.load(":/filestove_base.ico");
     m_labelImage->setPixmap(img.scaled(QSize(128, 128), Qt::KeepAspectRatio));
 
-    m_labelText->setText(
-        "<b>FileStove Version 0.9</b><br/>"
+    m_labelText->setText(QString(
+        "<b>FileStove Version %1.%2.%3</b><br/>"
         "&#169; 2019 Andreas Weis<br />"
         R"(<a href="website">github.com/ComicSansMS/filestove/</a><br />)"
         "<br/>"
         "Licensed under GPL v3.<br />"
         "This program comes with <em>absolutely no warranty</em>.<br />"
         "This is free software, and you are welcome to<br/>"
-        R"(redistribute it <a href="license">under certain conditions</a>.)");
+        R"(redistribute it <a href="license">under certain conditions</a>.)")
+        .arg(version().major).arg(version().minor).arg(version().patch));
     connect(m_labelText, &QLabel::linkActivated, this, &AboutDialog::onLinkClicked);
 
     m_layoutLabels.addStretch();
