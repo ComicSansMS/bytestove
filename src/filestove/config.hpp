@@ -17,6 +17,8 @@ struct Config {
     std::int32_t fileCollectChunkSize;
 
     Config();
+
+    friend bool operator==(Config const& lhs, Config const& rhs) = default;
 };
 }
 

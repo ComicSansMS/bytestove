@@ -73,6 +73,11 @@ int main(int argc, char* argv[])
                      &widget, &filestove::ui::StoveWidget::show);
     QObject::connect(&tray_icon, &filestove::ui::TrayIcon::requestQuit,
                      &the_app, &QApplication::quit);
+    QObject::connect(&tray_icon, &filestove::ui::TrayIcon::requestOptionsDialog,
+                     &widget, []() { /* !!!!! */ });
+
+    filestove::ui::OptionsDialog opt(config);
+    opt.exec();
 
     the_app.setQuitOnLastWindowClosed(false);
 

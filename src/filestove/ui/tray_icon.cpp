@@ -10,6 +10,9 @@ TrayIcon::TrayIcon()
      m_iconDone(":/filestove_done.ico"),
      m_menu(std::make_unique<QMenu>())
 {
+    m_menu->addAction("Suspend");
+    m_menu->addAction("Restart");
+    m_menu->addAction("Options", this, &TrayIcon::requestOptionsDialog);
     m_menu->addAction("About", this, &TrayIcon::showAboutDialog);
     m_menu->addSeparator();
     m_menu->addAction("Quit", this, [this]() { emit requestQuit(); });

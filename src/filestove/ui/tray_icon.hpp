@@ -29,6 +29,7 @@ public:
 signals:
     void showStoveWidget();
     void requestQuit();
+    void requestOptionsDialog();
 public slots:
     void ignite();
     void extinguish();
