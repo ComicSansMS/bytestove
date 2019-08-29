@@ -3,7 +3,6 @@
 #include <filestove/ui/cooker.hpp>
 #include <filestove/ui/tray_icon.hpp>
 #include <filestove/ui/widget.hpp>
-#include <filestove/ui/options_dialog.hpp>
 
 #include <gbBase/Finally.hpp>
 #include <gbBase/Log.hpp>
@@ -74,10 +73,7 @@ int main(int argc, char* argv[])
     QObject::connect(&tray_icon, &filestove::ui::TrayIcon::requestQuit,
                      &the_app, &QApplication::quit);
     QObject::connect(&tray_icon, &filestove::ui::TrayIcon::requestOptionsDialog,
-                     &widget, []() { /* !!!!! */ });
-
-    filestove::ui::OptionsDialog opt(config);
-    opt.exec();
+                     &config_holder, &filestove::ui::ConfigHolder::requestOptionsDialog);
 
     the_app.setQuitOnLastWindowClosed(false);
 

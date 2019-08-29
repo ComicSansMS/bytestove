@@ -30,13 +30,19 @@ private:
     QSpinBox* m_editIdle;;
     QSpinBox* m_editBufferSize;
     QSpinBox* m_editChunkSize;
+    QPushButton* m_buttonReset;
     QHBoxLayout m_layoutButtons;
     QPushButton* m_buttonOk;
     QPushButton* m_buttonCancel;
 public:
     OptionsDialog(Config const& config);
 
-    std::optional<Config> updateConfig(Config const& c) const;
+    std::optional<Config> getUpdatedConfig(Config const& c) const;
+
+public slots:
+    void resetToDefaults();
+private:
+    void fillUiFromConfig(Config const& config);
 };
 
 }

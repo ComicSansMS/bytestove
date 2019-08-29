@@ -16,6 +16,7 @@ public:
 public slots:
     void saveConfig();
     void updatePathlist(QStringList const& l);
+    void requestOptionsDialog();
 signals:
     void configChanged();
 };
