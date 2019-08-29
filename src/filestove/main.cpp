@@ -41,11 +41,14 @@ int main(int argc, char* argv[])
     }
 
     std::unique_ptr<Ghulbus::Log::Handlers::LogAsync> async_handler;
+    std::unique_ptr<Ghulbus::Log::Handlers::LogToFile> file_handler;
+    std::unique_ptr<Ghulbus::Log::Handlers::LogMultiSink> upstream;
     if (config.doLogging) {
-        Ghulbus::Log::Handlers::LogToFile file_handler("filestove.log");
-        Ghulbus::Log::Handlers::LogMultiSink upstream(Ghulbus::Log::getLogHandler(),
-                                                      file_handler);
-        async_handler = std::make_unique<Ghulbus::Log::Handlers::LogAsync>(upstream);
+        file_handler = std::make_unique<Ghulbus::Log::Handlers::LogToFile>("filestove.log");
+        upstream = std::make_unique<Ghulbus::Log::Handlers::LogMultiSink>(
+            Ghulbus::Log::getLogHandler(),
+            *file_handler);
+        async_handler = std::make_unique<Ghulbus::Log::Handlers::LogAsync>(*upstream);
         Ghulbus::Log::setLogHandler(*async_handler);
         async_handler->start();
     }
