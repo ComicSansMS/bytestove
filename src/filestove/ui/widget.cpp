@@ -13,9 +13,15 @@ namespace filestove::ui {
 
 StoveWidget::StoveWidget(std::vector<std::filesystem::path> const& path_list)
     :QWidget(), m_list(new PathlistWidget(this)), m_buttonAddFiles(new QPushButton("+", this)),
-     m_buttonAddDirectory(new QPushButton("+ Dir", this)),
+     m_buttonAddDirectory(new QPushButton("+", this)),
      m_buttonRemoveEntry(new QPushButton("-", this))
 {
+    m_buttonAddDirectory->setIcon(style()->standardIcon(QStyle::SP_DirIcon));
+
+    m_buttonAddFiles->setToolTip("Add files");
+    m_buttonAddDirectory->setToolTip("Add directory");
+    m_buttonRemoveEntry->setToolTip("Remove entry from list");
+
     m_layout.addWidget(m_list);
     m_buttonLayout.addWidget(m_buttonAddFiles);
     m_buttonLayout.addWidget(m_buttonAddDirectory);
