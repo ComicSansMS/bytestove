@@ -44,8 +44,8 @@ void Cooker::run()
     filestove::ActivityMonitor monitor;
     filestove::FileCollector collector(config.directories);
     bool is_waiting = true;
-    std::size_t read_overall = 0;
-    std::size_t read_this_interval = 0;
+    std::uintmax_t read_overall = 0;
+    std::uintmax_t read_this_interval = 0;
     std::optional<filestove::Stove> stove;
     std::chrono::steady_clock::time_point t0;
     while (!stove || !stove->isDone()) {
@@ -66,15 +66,23 @@ void Cooker::run()
             bool timeout = false;
             if (!stove) {
                 if (!collector.collect(config.fileCollectChunkSize)) {
-                    stove = filestove::Stove{ collector.extractCollectedFiles(), config.readBufferSize };
-                    emit collectCompleted();
+                    auto const n_files = collector.currentFileCount();
+                    auto const total_size = collector.currentSizeCount();
+                    auto files = collector.extractCollectedFiles();
+                    stove = filestove::Stove{ files, config.readBufferSize };
+                    {
+                        std::lock_guard lk(m_mtx);
+                        m_files = std::move(files);
+                    }
+                    emit collectCompleted(n_files, total_size);
                 } else {
-                    emit collectUpdate();
+                    emit collectUpdate(collector.currentFileCount(), collector.currentSizeCount());
                 }
             } else {
                 while (stove->cook()) {
                     auto const t1 = std::chrono::steady_clock::now();
                     if (t1 - t0 > config.scanInterval) { timeout = true; break; }
+                    emit cookingUpdate(read_overall + stove->readCount());
                 }
                 read_this_interval += stove->readCount();
                 stove->resetReadCount();
@@ -85,7 +93,6 @@ void Cooker::run()
                     read_overall += read_this_interval;
                     read_this_interval = 0;
                     t0 = std::chrono::steady_clock::now();
-                    emit cookingUpdate();
                 }
             }
             std::lock_guard lk(m_mtx);

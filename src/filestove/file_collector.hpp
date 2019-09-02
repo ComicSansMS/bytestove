@@ -20,6 +20,9 @@ public:
     bool collect(std::int32_t collect_limit);
 
     std::vector<FileInfo> extractCollectedFiles();
+
+    std::uintmax_t currentFileCount() const;
+    std::uintmax_t currentSizeCount() const;
 };
 
 }

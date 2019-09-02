@@ -12,7 +12,9 @@
 namespace filestove::ui {
 
 StoveWidget::StoveWidget(std::vector<std::filesystem::path> const& path_list)
-    :QWidget(), m_list(new PathlistWidget(this)), m_buttonAddFiles(new QPushButton("+", this)),
+    :QWidget(), m_list(new PathlistWidget(this)), m_labelStatus(new QLabel(this)),
+     m_progressOverall(new QProgressBar(this)),
+     m_buttonAddFiles(new QPushButton("+", this)),
      m_buttonAddDirectory(new QPushButton("+", this)),
      m_buttonRemoveEntry(new QPushButton("-", this))
 {
@@ -24,6 +26,9 @@ StoveWidget::StoveWidget(std::vector<std::filesystem::path> const& path_list)
     m_buttonRemoveEntry->setToolTip("Remove entry from list");
 
     m_layout.addWidget(m_list);
+    m_layout.addWidget(m_labelStatus);
+    m_layout.addWidget(m_progressOverall);
+    m_progressOverall->hide();
     m_buttonLayout.addWidget(m_buttonAddFiles);
     m_buttonLayout.addWidget(m_buttonAddDirectory);
     m_buttonLayout.addWidget(m_buttonRemoveEntry);
@@ -87,6 +92,29 @@ void StoveWidget::closeEvent(QCloseEvent* evt)
 void StoveWidget::onShowRequested()
 {
     show();
+}
+
+void StoveWidget::onCollectUpdate(std::uintmax_t n_files, std::uintmax_t total_size)
+{
+    m_labelStatus->setText(QString("Collecting %2 bytes in %1 files").arg(n_files).arg(total_size));
+}
+
+void StoveWidget::onCollectCompleted(std::uintmax_t n_files, std::uintmax_t total_size)
+{
+    m_labelStatus->setText(QString("%2 bytes in %1 files").arg(n_files).arg(total_size));
+    m_progressOverall->setRange(0, static_cast<int>(total_size / (4096 * 1024)));
+    m_progressOverall->setValue(0);
+    m_progressOverall->show();
+}
+
+void StoveWidget::onCookingUpdate(std::uintmax_t bytes_read)
+{
+    m_progressOverall->setValue(static_cast<int>(bytes_read / (4096 * 1024)));
+}
+
+void StoveWidget::onCookingCompleted()
+{
+    m_progressOverall->hide();
 }
 
 void StoveWidget::addEntry(std::filesystem::path const& p, FileType type)

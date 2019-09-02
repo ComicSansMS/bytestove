@@ -77,6 +77,15 @@ int main(int argc, char* argv[])
                      &the_app, &QApplication::quit);
     QObject::connect(&tray_icon, &filestove::ui::TrayIcon::requestOptionsDialog,
                      &config_holder, &filestove::ui::ConfigHolder::requestOptionsDialog);
+    QObject::connect(&cooker, &filestove::ui::Cooker::collectUpdate,
+                     &widget, &filestove::ui::StoveWidget::onCollectUpdate, Qt::QueuedConnection);
+    QObject::connect(&cooker, &filestove::ui::Cooker::collectCompleted,
+                     &widget, &filestove::ui::StoveWidget::onCollectCompleted, Qt::QueuedConnection);
+    QObject::connect(&cooker, &filestove::ui::Cooker::cookingUpdate,
+                     &widget, &filestove::ui::StoveWidget::onCookingUpdate, Qt::QueuedConnection);
+    QObject::connect(&cooker, &filestove::ui::Cooker::cookingCompleted,
+                     &widget, &filestove::ui::StoveWidget::onCookingCompleted, Qt::QueuedConnection);
+    widget.show();
 
     the_app.setQuitOnLastWindowClosed(false);
 

@@ -80,7 +80,7 @@ struct Stove::Pimpl {
             :it{}, size(0), bytes_read(0)
         {}
     } m_currentFile;
-    std::size_t m_readCount = 0;
+    std::uintmax_t m_readCount = 0;
     DWORD m_bufferSize;
     std::vector<std::byte> m_buffer;
     bool m_isDone;
