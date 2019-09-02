@@ -83,6 +83,7 @@ struct Stove::Pimpl {
     std::size_t m_readCount = 0;
     DWORD m_bufferSize;
     std::vector<std::byte> m_buffer;
+    bool m_isDone;
 
     bool cook();
     void openFile();
@@ -95,6 +96,7 @@ Stove::Stove(std::vector<std::filesystem::path> files_to_cook, std::int32_t buff
     m_pimpl->m_currentFile.it = begin(m_pimpl->m_files);
     m_pimpl->m_bufferSize = buffer_size;
     m_pimpl->m_buffer.resize(buffer_size);
+    m_pimpl->m_isDone = false;
 }
 
 Stove::~Stove() = default;
@@ -110,9 +112,9 @@ bool Stove::cook()
 bool Stove::Pimpl::cook()
 {
     if (!m_currentFile.hfile) {
-        if (m_currentFile.it == end(m_files)) { return false; }
+        if (m_currentFile.it == end(m_files)) { m_isDone = true; return false; }
         openFile();
-        if (!m_currentFile.hfile) { return false; }
+        if (!m_currentFile.hfile) { m_isDone = true; return false; }
     }
     GHULBUS_ASSERT(m_bufferSize == m_buffer.size());
 
@@ -170,6 +172,11 @@ void Stove::resetReadCount() noexcept
 std::size_t Stove::readCount() const noexcept
 {
     return m_pimpl->m_readCount;
+}
+
+bool Stove::isDone() const noexcept
+{
+    return m_pimpl->m_isDone;
 }
 
 }

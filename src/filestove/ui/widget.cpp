@@ -16,6 +16,7 @@ StoveWidget::StoveWidget(std::vector<std::filesystem::path> const& path_list)
      m_buttonAddDirectory(new QPushButton("+", this)),
      m_buttonRemoveEntry(new QPushButton("-", this))
 {
+    m_buttonAddFiles->setIcon(style()->standardIcon(QStyle::SP_FileIcon));
     m_buttonAddDirectory->setIcon(style()->standardIcon(QStyle::SP_DirIcon));
 
     m_buttonAddFiles->setToolTip("Add files");

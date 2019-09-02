@@ -33,6 +33,9 @@ public slots:
 signals:
     void startWaiting();
     void startCooking();
+    void collectUpdate();
+    void collectCompleted();
+    void cookingUpdate();
     void cookingCompleted();
 private:
     void run();

@@ -24,6 +24,8 @@ public:
 
     void resetReadCount() noexcept;
     std::size_t readCount() const noexcept;
+
+    bool isDone() const noexcept;
 };
 
 }

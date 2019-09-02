@@ -37,22 +37,27 @@ void Cooker::onConfigUpdate()
 
 void Cooker::run()
 {
+    Config config = [this]() {
+        std::lock_guard lk(m_mtx);
+        return m_config;
+    }();
     filestove::ActivityMonitor monitor;
-    std::unique_lock lk(m_mtx);
-    filestove::FileCollector collector(m_config.directories);
-    bool done = false;
+    filestove::FileCollector collector(config.directories);
     bool is_waiting = true;
     std::size_t read_overall = 0;
     std::size_t read_this_interval = 0;
     std::optional<filestove::Stove> stove;
     std::chrono::steady_clock::time_point t0;
-    for (;;) {
+    while (!stove || !stove->isDone()) {
         if (is_waiting) {
             emit startWaiting();
-            if (m_cv.wait_for(lk, m_config.scanInterval, [this]() { return m_quitRequested; })) {
-                return;
+            {
+                std::unique_lock lk(m_mtx);
+                if (m_cv.wait_for(lk, config.scanInterval, [this]() { return m_quitRequested; })) {
+                    return;
+                }
             }
-            if (monitor.collect() < m_config.readIdleThreshold) {
+            if (monitor.collect() < config.readIdleThreshold) {
                 is_waiting = false;
                 t0 = std::chrono::steady_clock::now();
                 emit startCooking();
@@ -60,26 +65,31 @@ void Cooker::run()
         } else {
             bool timeout = false;
             if (!stove) {
-                if (done) { break; }
-                if (!collector.collect(m_config.fileCollectChunkSize)) { done = true; }
-                stove = filestove::Stove{ collector.extractCollectedFiles(), m_config.readBufferSize };
-            }
-            while (stove->cook()) {
-                auto const t1 = std::chrono::steady_clock::now();
-                if (t1 - t0 > m_config.scanInterval) { timeout = true; break; }
-            }
-            read_this_interval += stove->readCount();
-            stove->resetReadCount();
-            if (timeout) {
-                if (monitor.collect() > m_config.readIdleThreshold + read_this_interval) {
-                    is_waiting = true;
+                if (!collector.collect(config.fileCollectChunkSize)) {
+                    stove = filestove::Stove{ collector.extractCollectedFiles(), config.readBufferSize };
+                    emit collectCompleted();
+                } else {
+                    emit collectUpdate();
                 }
-                read_overall += read_this_interval;
-                read_this_interval = 0;
-                t0 = std::chrono::steady_clock::now();
             } else {
-                stove = std::nullopt;
+                while (stove->cook()) {
+                    auto const t1 = std::chrono::steady_clock::now();
+                    if (t1 - t0 > config.scanInterval) { timeout = true; break; }
+                }
+                read_this_interval += stove->readCount();
+                stove->resetReadCount();
+                if (timeout) {
+                    if (monitor.collect() > config.readIdleThreshold + read_this_interval) {
+                        is_waiting = true;
+                    }
+                    read_overall += read_this_interval;
+                    read_this_interval = 0;
+                    t0 = std::chrono::steady_clock::now();
+                    emit cookingUpdate();
+                }
             }
+            std::lock_guard lk(m_mtx);
+            if (m_quitRequested) { return; }
         }
     }
     GHULBUS_LOG(Info, "Done cooking. Read " << read_overall + read_this_interval << " bytes in total.");
