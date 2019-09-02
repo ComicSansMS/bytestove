@@ -8,11 +8,11 @@ namespace filestove {
 
 void cook(std::filesystem::path const& path)
 {
-    std::vector<std::filesystem::path> files;
+    std::vector<FileInfo> files;
     auto const iterOpts = std::filesystem::directory_options::follow_directory_symlink;
     for (auto& e : std::filesystem::recursive_directory_iterator(path, iterOpts)) {\
         if (e.is_regular_file()) {
-            files.emplace_back(e);
+            files.emplace_back(e, std::filesystem::file_size(e));
         }
     }
     GHULBUS_LOG(Info, "Collected " << files.size() << " files for cooking.");

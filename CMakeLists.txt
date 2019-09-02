@@ -46,6 +46,7 @@ set(FILESTOVE_HEADER_FILES
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/cook.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/exceptions.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/file_collector.hpp
+    ${FILESTOVE_SOURCE_DIRECTORY}/filestove/file_info.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/stove.hpp
     ${FILESTOVE_SOURCE_DIRECTORY}/filestove/version.hpp
 )

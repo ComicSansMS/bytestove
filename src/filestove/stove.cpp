@@ -69,9 +69,9 @@ public:
 };
 
 struct Stove::Pimpl {
-    std::vector<std::filesystem::path> m_files;
+    std::vector<FileInfo> m_files;
     struct CurrentFileInfo {
-        std::vector<std::filesystem::path>::const_iterator it;
+        std::vector<FileInfo>::const_iterator it;
         FileHandle hfile;
         std::size_t size;
         std::size_t bytes_read;
@@ -89,7 +89,7 @@ struct Stove::Pimpl {
     void openFile();
 };
 
-Stove::Stove(std::vector<std::filesystem::path> files_to_cook, std::int32_t buffer_size)
+Stove::Stove(std::vector<FileInfo> files_to_cook, std::int32_t buffer_size)
     :m_pimpl(std::make_unique<Pimpl>())
 {
     m_pimpl->m_files = std::move(files_to_cook);
@@ -122,7 +122,7 @@ bool Stove::Pimpl::cook()
     DWORD const to_read = static_cast<DWORD>(
         std::min(static_cast<size_t>(m_bufferSize), m_currentFile.size - m_currentFile.bytes_read));
     if (ReadFile(m_currentFile.hfile.get(), m_buffer.data(), to_read, &bytes_read, nullptr) != TRUE) {
-        GHULBUS_LOG(Warning, "Unable to read file " << m_currentFile.it->generic_string() <<
+        GHULBUS_LOG(Warning, "Unable to read file " << m_currentFile.it->path.generic_string() <<
                              "; Error was: " << GetLastError());
         m_currentFile.hfile.reset();
     } else {
@@ -141,21 +141,21 @@ void Stove::Pimpl::openFile()
 {
     for (; m_currentFile.it != end(m_files); ++m_currentFile.it) {
         m_currentFile.hfile.reset(
-            CreateFileW(m_currentFile.it->native().c_str(),
+            CreateFileW(m_currentFile.it->path.native().c_str(),
                 GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
                 nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr));
         if (!m_currentFile.hfile) {
-            GHULBUS_LOG(Warning, "Unable to open file " << m_currentFile.it->generic_string());
+            GHULBUS_LOG(Warning, "Unable to open file " << m_currentFile.it->path.generic_string());
         } else {
             m_currentFile.bytes_read = 0;
             LARGE_INTEGER s;
             if (GetFileSizeEx(m_currentFile.hfile.get(), &s) == 0) {
                 GHULBUS_LOG(Warning, "Unable to determine size for file " <<
-                                     m_currentFile.it->generic_string() <<
+                                     m_currentFile.it->path.generic_string() <<
                                      "; Error was: " << GetLastError());
             } else {
                 m_currentFile.size = s.QuadPart;
-                GHULBUS_LOG(Info, "Opened " << m_currentFile.it->generic_string() <<
+                GHULBUS_LOG(Info, "Opened " << m_currentFile.it->path.generic_string() <<
                                   " for reading (" << m_currentFile.size <<  " bytes).");
                 return;
             }
