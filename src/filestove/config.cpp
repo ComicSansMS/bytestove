@@ -84,14 +84,14 @@ Config readConfig(std::filesystem::path const& filename)
             GHULBUS_LOG(Error, "Invalid path entry #" << i << ".");
             GHULBUS_THROW(Ghulbus::Exceptions::IOError{}, "Error reading config file.");
         }
-        std::vector<char> buffer;
+        std::vector<char8_t> buffer;
         buffer.resize(slen);
-        fin.read(buffer.data(), buffer.size());
+        fin.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
         if (!fin || !buffer.back() == '\0') {
             GHULBUS_LOG(Error, "Invalid path entry.");
             GHULBUS_THROW(Ghulbus::Exceptions::IOError{}, "Error reading config file.");
         }
-        ret.directories.emplace_back(buffer.data());
+        ret.directories.emplace_back(buffer.data(), std::filesystem::path::format::generic_format);
     }
 
     std::uint32_t scan_interval;
@@ -165,14 +165,14 @@ void writeConfig(Config const& config, std::filesystem::path const& filename)
     std::uint32_t const n_directories = static_cast<std::uint32_t>(config.directories.size());
     fout.write(reinterpret_cast<char const*>(&n_directories), 4);
     for (auto const& d : config.directories) {
-        std::string const str = d.generic_string();
+        std::u8string const str = d.generic_u8string();
         if (str.length() + 1 > std::numeric_limits<std::uint32_t>::max()) {
             GHULBUS_LOG(Error, "Invalid directory entry.");
             GHULBUS_THROW(Ghulbus::Exceptions::IOError{}, "Error writing config file.");
         }
-        std::uint32_t const slen = static_cast<std::uint32_t>(str.length() + 1);
+        std::uint32_t const slen = static_cast<std::uint32_t>(str.size() + 1);
         fout.write(reinterpret_cast<char const*>(&slen), 4);
-        fout.write(str.data(), slen);
+        fout.write(reinterpret_cast<char const*>(str.data()), slen);
     }
 
     if (config.scanInterval.count() > std::numeric_limits<std::uint32_t>::max()) {
