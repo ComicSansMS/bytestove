@@ -1,5 +1,7 @@
 #include <filestove/stove.hpp>
 
+#include <filestove/path_to_string.hpp>
+
 #include <gbBase/Assert.hpp>
 #include <gbBase/Log.hpp>
 
@@ -122,7 +124,7 @@ bool Stove::Pimpl::cook()
     DWORD const to_read = static_cast<DWORD>(
         std::min(static_cast<size_t>(m_bufferSize), m_currentFile.size - m_currentFile.bytes_read));
     if (ReadFile(m_currentFile.hfile.get(), m_buffer.data(), to_read, &bytes_read, nullptr) != TRUE) {
-        GHULBUS_LOG(Warning, "Unable to read file " << m_currentFile.it->path.generic_string() <<
+        GHULBUS_LOG(Warning, "Unable to read file " << path_to_string(m_currentFile.it->path) <<
                              "; Error was: " << GetLastError());
         m_currentFile.hfile.reset();
     } else {
@@ -145,17 +147,17 @@ void Stove::Pimpl::openFile()
                 GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
                 nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr));
         if (!m_currentFile.hfile) {
-            GHULBUS_LOG(Warning, "Unable to open file " << m_currentFile.it->path.generic_string());
+            GHULBUS_LOG(Warning, "Unable to open file " << path_to_string(m_currentFile.it->path));
         } else {
             m_currentFile.bytes_read = 0;
             LARGE_INTEGER s;
             if (GetFileSizeEx(m_currentFile.hfile.get(), &s) == 0) {
                 GHULBUS_LOG(Warning, "Unable to determine size for file " <<
-                                     m_currentFile.it->path.generic_string() <<
+                                     path_to_string(m_currentFile.it->path) <<
                                      "; Error was: " << GetLastError());
             } else {
                 m_currentFile.size = s.QuadPart;
-                GHULBUS_LOG(Info, "Opened " << m_currentFile.it->path.generic_string() <<
+                GHULBUS_LOG(Info, "Opened " << path_to_string(m_currentFile.it->path) <<
                                   " for reading (" << m_currentFile.size <<  " bytes).");
                 return;
             }

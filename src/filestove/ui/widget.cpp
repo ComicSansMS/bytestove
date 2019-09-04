@@ -126,7 +126,7 @@ void StoveWidget::addEntry(std::filesystem::path const& p, FileType type)
         GHULBUS_ASSERT(type == FileType::Regular);
         item->setIcon(style()->standardIcon(QStyle::SP_FileIcon));
     }
-    item->setText(QString::fromStdString(p.generic_string()));
+    item->setText(QString::fromStdU16String(p.generic_u16string()));
     m_list->addItem(item);
 }
 

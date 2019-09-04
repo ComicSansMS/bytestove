@@ -1,5 +1,7 @@
 #include <filestove/file_collector.hpp>
 
+#include <filestove/path_to_string.hpp>
+
 #include <gbBase/Log.hpp>
 
 #include <numeric>
@@ -25,7 +27,7 @@ bool FileCollector::collect(std::int32_t collect_limit)
                 ++collect_count;
                 continue;
             } else {
-                GHULBUS_LOG(Warning, "Unrecognized file type " << m_pathIt->generic_string());
+                GHULBUS_LOG(Warning, "Unrecognized file type " << path_to_string(*m_pathIt));
                 continue;
             }
         }
