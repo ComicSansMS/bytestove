@@ -33,7 +33,7 @@ void ConfigHolder::updatePathlist(QStringList const& l)
 {
     m_config.directories.clear();
     for (auto const& s : l) {
-        m_config.directories.emplace_back(s.toStdString());
+        m_config.directories.emplace_back(s.toStdU16String());
     }
     emit configChanged();
 }

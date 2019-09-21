@@ -56,7 +56,7 @@ void StoveWidget::onAddFiles()
     if (filediag.exec()) {
         QStringList added_files = filediag.selectedFiles();
         for (auto const f : added_files) {
-            addEntry(f.toStdString(), FileType::Regular);
+            addEntry(f.toStdU16String(), FileType::Regular);
         }
     }
 }
@@ -69,7 +69,7 @@ void StoveWidget::onAddDirectory()
     if (filediag.exec()) {
         QStringList added_files = filediag.selectedFiles();
         for (auto const f : added_files) {
-            addEntry(f.toStdString(), FileType::Directory);
+            addEntry(f.toStdU16String(), FileType::Directory);
         }
     }
 }
