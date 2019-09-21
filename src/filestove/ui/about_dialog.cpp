@@ -9,6 +9,8 @@
 
 #include <QDesktopServices>
 #include <QFile>
+#include <QFontMetrics>
+#include <QStyle>
 #pragma warning(push)
 #pragma warning(disable: 4251)
 #include <QTextStream>
@@ -51,7 +53,13 @@ AboutDialog::AboutDialog(QWidget* parent)
         QFile f(":/gpl.txt");
         f.open(QIODevice::ReadOnly | QIODevice::Text);
         QTextStream txstr(&f);
-        m_editLicense->setPlainText(txstr.readAll());
+        QString const license_text = txstr.readAll();
+        m_editLicense->setPlainText(license_text);
+        QFontMetrics const font_metrics = m_editLicense->fontMetrics();
+        QSize const text_size = font_metrics.size(0, license_text);
+        auto const scrollbar_width = m_editLicense->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
+        // it is totally unclear where the + 10 part comes from
+        m_editLicense->setMinimumWidth(text_size.width() + scrollbar_width + 10);
     }
     m_editLicense->setReadOnly(true);
     m_editLicense->setMinimumHeight(225);
@@ -63,7 +71,6 @@ AboutDialog::AboutDialog(QWidget* parent)
     m_layout.addLayout(&m_layoutButtons);
 
     setLayout(&m_layout);
-    setMinimumWidth(600);
 
     connect(m_buttonAboutQt, &QPushButton::clicked, this, &AboutDialog::showAboutQt);
     connect(m_buttonOk, &QPushButton::clicked, this, &AboutDialog::accept);
