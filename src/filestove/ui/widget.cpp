@@ -7,6 +7,8 @@
 #pragma warning(push)
 #pragma warning(disable: 4251)
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QFileIconProvider>
 #pragma warning(pop)
 
 namespace filestove::ui {
@@ -120,13 +122,15 @@ void StoveWidget::onCookingCompleted()
 void StoveWidget::addEntry(std::filesystem::path const& p, FileType type)
 {
     QListWidgetItem* item = new QListWidgetItem();
+    QString const p_string = QString::fromStdU16String(p.generic_u16string());
     if (type == FileType::Directory) {
         item->setIcon(style()->standardIcon(QStyle::SP_DirIcon));
     } else {
         GHULBUS_ASSERT(type == FileType::Regular);
-        item->setIcon(style()->standardIcon(QStyle::SP_FileIcon));
+        QFileIconProvider icon_provider;
+        item->setIcon(icon_provider.icon(QFileInfo(p_string)));
     }
-    item->setText(QString::fromStdU16String(p.generic_u16string()));
+    item->setText(std::move(p_string));
     m_list->addItem(item);
 }
 
