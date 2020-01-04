@@ -16,7 +16,7 @@ namespace Records
 {
 }
 
-typedef boost::error_info<Tags::pdh_status, long> pdh_status;
+using pdh_status = Ghulbus::ErrorInfo<Tags::pdh_status, long>;
 }
 
 }
